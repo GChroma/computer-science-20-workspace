@@ -1,0 +1,2 @@
+module rotating_letters {
+}
