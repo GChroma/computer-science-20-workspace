@@ -33,27 +33,26 @@ public class MastermindHelper {
 
 		do {
 			int number;
-			boolean isPossible = false;
-
-			do {// loop to check if the number is possible.
-
-				number = ((int)(Math.random() * 8) + 1)*1000 + ((int)(Math.random() * 8) + 1)*100 + ((int)(Math.random() * 8) + 1)*10 + ((int)(Math.random() * 8) + 1);
-
-				for (int x = 0; x < 4096; x++) {
-					int solution = 1000 * solutions[x][0] + 100 * solutions[x][1] + 10 * solutions[x][2]
-							+ solutions[x][3];
-
-					if (number == solution) {
-						if (possible[x] == true) {
-							possible[x] = false;
-							isPossible = true;
-						}
-					}
+			boolean allFalse = true;
+			
+			for(int x = 0; x < 4096; x++) {//check if they're all false
+				if(possible[x] == true) {
+					allFalse = false;
 				}
+	
+			}
 
-			} while (!isPossible);
-
-			System.out.println("Please enter the colours that correspond to this number: " + number);
+			if(allFalse == true) {
+				System.out.println("Looks like an error occurred. This board is impossible to win.");
+				System.exit(0);
+			}
+			
+			do {//find random number
+				number = (int)(Math.random()*(4095));
+			} while (possible[number] == false);
+			possible[number] = false;
+			
+			System.out.println("Please enter the colours that correspond to this number: " + solutions[number][0] + solutions[number][1] + solutions[number][2] + solutions[number][3]);
 
 			System.out.println(
 					"Please enter the resulting pegs, with 1 for red and 2 for white and 0 for no peg in the order that is displayed one at a time (top left, top right, bottom left, bottom right)");
@@ -64,7 +63,7 @@ public class MastermindHelper {
 				pegs[i] = input.nextInt();
 			}
 			
-			int[] guess = toIntArray(number);// turn the guess into an int array for easier comparison
+			int[] guess = {solutions[number][0], solutions[number][1], solutions[number][2], solutions[number][3]};// turn the guess into an int array for easier comparison
 
 			for (int x = 0; x < 4096; x++) {// compare other solutions to the current guess to find a match in pegs.
 
@@ -102,8 +101,7 @@ public class MastermindHelper {
 									checkPegs[j] = 2;
 									break;
 								}
-							}
-							
+							}	
 						}
 					}
 
@@ -121,20 +119,6 @@ public class MastermindHelper {
 			}
 
 		} while (true);
-
-	}
-
-	public static int[] toIntArray(int number) {// turn an integer into an array full of its digits (also in int form).
-
-		String stringNum = String.valueOf(number);// if this is done using modulus and division the digits are spat out
-													// backwards and have to be reversed with a stack.
-		char[] digits = stringNum.toCharArray();
-		int[] intArray = new int[4];
-		for (int i = 0; i < 4; i++) {
-			intArray[i] = Character.getNumericValue(digits[i]);
-		}
-
-		return intArray;
 
 	}
 
